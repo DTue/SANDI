@@ -1,0 +1,6 @@
+FlagEmbedding
+numpy
+pydantic-settings
+pypdf
+ollama
+pytest
