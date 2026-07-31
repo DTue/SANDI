@@ -5,10 +5,11 @@ Goals:
 - Stay lightweight
 
 """
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from dataclasses import dataclass #a decorator that examines a class to find a field
 
 @dataclass
-class Settings: 
+class Settings(BaseSettings): 
 
     #Project Information
     PROJECT_NAME = "SANDI"
