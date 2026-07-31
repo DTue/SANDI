@@ -15,7 +15,7 @@ class Settings(BaseSettings):
 
     #Models: What model objects to use? 
     LANGUAGE_MODEL: str = "qwen3:8b"  
-    EMBEDDING_MODEL: str = "BAAI/bge-m3" 
+    EMBEDDING_MODEL: str = "Qwen/Qwen3-Embedding-8B" 
 
     #RAG
     TOP_K: int = 5 #Number of relavant text chunks to be trieved from database
