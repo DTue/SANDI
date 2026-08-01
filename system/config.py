@@ -13,9 +13,9 @@ class Settings(BaseSettings):
     #Project Information
     PROJECT_NAME: str = "SANDI"
 
-    #Models: What model objects to use? 
+    #Models: What model names to use? 
     LANGUAGE_MODEL: str = "qwen3:8b"  
-    EMBEDDING_MODEL: str = "Qwen/Qwen3-Embedding-8B" 
+    EMBEDDING_MODEL: str = "Qwen/Qwen3-Embedding-0.6B" 
 
     #RAG
     TOP_K: int = 5 #Number of relavant text chunks to be trieved from database
