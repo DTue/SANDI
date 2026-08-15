@@ -1,9 +1,9 @@
-#Purpose: Central configuration to read environment variables
 """
+File Name: config.py
+Purpose: Central configuration to read environment variables
 Goals:
 - Hold names and paths
 - Stay lightweight
-
 """
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
