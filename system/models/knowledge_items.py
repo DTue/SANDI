@@ -13,10 +13,9 @@ from dataclasses import dataclass
 class KnowledgeItem:
     id: str
     name: str
-    prorgam_title: str
+    program: str
     category: str
     source: str
-    program_url: str
     summary: str
 
     

@@ -13,7 +13,7 @@ Architecture Decision:
 """
 
 from system.models.knowledge_items import KnowledgeItem
-from models.retrieved_results import RetrievedResults
+#from models.retrieved_results import RetrievedResults
 import numpy as np
 
 
@@ -44,24 +44,72 @@ class VectorDatabase:
     """
     def add(self, knowledge_items: list[KnowledgeItem], embedding_matrix: np.ndarray) -> None:
 
-        #add() Error and Risk Validation for incoming elements
+        #Error and Risk Validation: Knowledge Items
         if not knowledge_items: #VALIDATION: Empty knowledge item list - Should be initially empty
             raise ValueError ("VALUE ERROR: knowledge items list is empty")
-
+        
         if embedding_matrix is None: #VALIDATION: NULL or invalid  embedding matrix
             raise ValueError("VALUE ERROR: embedding matrix is invalid or empty")
 
-        if embedding_matrix.ndim != 2: #VALIDATION: Non-2D Embedding Matrix
+        if np.ndim(embedding_matrix) != 2: #VALIDATION: Non-2D Embedding Matrix
             raise ValueError("VALUE ERROR: Embedding matrix's dimension is not 2D")
-        
+
+        #VALIDATION PASSED
         if len(knowledge_items) != embedding_matrix.shape[0]: #VALIDATION: Unequal vectors by comparing rows
-            raise RuntimeError("RUNTIME ERROR: Knowledge items list and embedding matrix is inequal")
+            raise ValueError("VALUE ERROR: Knowledge items list and embedding matrix is inequal")
+    
+        #for-loop for set comprehension to create a new set containing id of every list object - automatically remove duplicates
+        existing_knowledge_ids = {item.id for item in self._knowledge_items} 
+        print(f"Existing Knowledge IDs: {existing_knowledge_ids}")
+        incoming_knowledge_ids = {item.id for item in knowledge_items}
+        print(f"Incoming Knowledge IDs: {incoming_knowledge_ids}")
+        knowledge_id_duplicate = existing_knowledge_ids.intersection(incoming_knowledge_ids) #checks for common ids
+        print(f"Knowledge ID Duplicate: {knowledge_id_duplicate}")
+
+        #VALIDATION PASSED
+        if knowledge_id_duplicate: #VALIDATION: if there are duplicate ids
+            raise ValueError(f"VALUE ERROR: Duplicate ids between existing and incoming knowledge items{knowledge_id_duplicate}")
+        
+        if len(knowledge_items) != len(incoming_knowledge_ids): #VALIDATION if there duplicate ids within incoming items
+            raise ValueError("VALUE ERROR: There are duplicate ids within the incoming knowledge items")
+        
+        print("CHECK POINT: All incoming knowledge item ids should be valid.")
 
         if not self._knowledge_items: # if knowledge items list is empty
-            self._knowledge_items.extend(knowledge_items) #add new knowledge items/all elements of an iterable to the end of the list
-            self._embedding_matrix = embedding_matrix  #add new embedding matrix
+                self._knowledge_items = knowledge_items  
+                self._embedding_matrix = embedding_matrix
+                return
+
+        #Error and Validation: Embedding Matrix  - checking embedding dimension
+
+        #All vectors in the same vector should have the same embedding dimension
+        existing_embedding_dimension = self._embedding_matrix.shape[1] #return an int for embedding dimension
+        incoming_embedding_dimension = embedding_matrix.shape[1]
+
+        if existing_embedding_dimension!= incoming_embedding_dimension: #VALIDATION: inequal embedding dimension
+            raise ValueError("VALUE ERROR: existing and incoming embedding dimensions do not match")
+
+        print("CHECK POINT: All incoming knowledge ids and corresponding embedding dimension should be valid.")
+
+        #Append operation
+        self._knowledge_items.extend(knowledge_items)
+        print(f"Length of Knowledge Items List: {len(self._knowledge_items)}")
+        self._embedding_matrix = np.vstack((self._embedding_matrix, embedding_matrix))
+        print(f"Embedding Dimension: {self._embedding_matrix.shape[1]}")
+        print(f"Full Matrix Shape:{len(self._knowledge_items), self._embedding_matrix.shape[1]}")
+
+
+ 
+
+
+
+
         
-                            
+
+
+            
+
+
 
 
 
