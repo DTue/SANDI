@@ -7,10 +7,10 @@ Architecture Decision:
 @dataclass(frozen=True): represents structured and immutable/frozen data for predictable typed object 
 """
 from dataclasses import dataclass
-from knowledge import Knowledge
+from system.models.knowledge_items import KnowledgeItem
 
 @dataclass(fron=True)
 class RetrievedResults:
-    info: Knowledge
+    items: KnowledgeItem
     similarity_score: float
     rank: int

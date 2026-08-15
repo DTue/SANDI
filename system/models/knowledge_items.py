@@ -10,7 +10,7 @@ Architecture Decision:
 from dataclasses import dataclass
 
 @dataclass(frozen=True) 
-class Knowledge:
+class KnowledgeItem:
     id: str
     name: str
     prorgam_title: str
