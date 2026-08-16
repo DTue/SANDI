@@ -23,5 +23,13 @@ new_embeddings = np.array([
 ])
 
 vector_db = VectorDatabase()
+print(f"Vector DB - Knowledge Items Count: {vector_db.count()}")
 vector_db.add(mock_knowledge_items, mock_embeddings)
+print(f"Vector DB - Knowledge Items Count: {vector_db.count()}")
 vector_db.add(new_knowledge_items, new_embeddings)
+print(f"Vector DB - Knowledge Items Count: {vector_db.count()}")
+vector_db.clear_db()
+print(f"Final vector database: {vector_db}")
+print(f"Vector DB - Knowledge Items Count: {vector_db.count()}")
+
+
