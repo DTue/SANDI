@@ -58,7 +58,8 @@ class VectorDatabase:
         if len(knowledge_items) != embedding_matrix.shape[0]: #VALIDATION: Unequal vectors by comparing rows
             raise ValueError("VALUE ERROR: Knowledge items list and embedding matrix is inequal")
     
-        #for-loop for set comprehension to create a new set containing id of every list object - automatically remove duplicates
+        #for-loop for set comprehension to create a new set containing id of every list object - automatically remove duplicates   
+        
         existing_knowledge_ids = {item.id for item in self._knowledge_items} 
         print(f"Existing Knowledge IDs: {existing_knowledge_ids}")
         incoming_knowledge_ids = {item.id for item in knowledge_items}
@@ -94,38 +95,24 @@ class VectorDatabase:
         #Append operation
         self._knowledge_items.extend(knowledge_items)
         print(f"Length of Knowledge Items List: {len(self._knowledge_items)}")
-        self._embedding_matrix = np.vstack((self._embedding_matrix, embedding_matrix))
+        self._embedding_matrix = np.vstack((self._embedding_matrix, embedding_matrix)) #vertical stack
         print(f"Embedding Dimension: {self._embedding_matrix.shape[1]}")
         print(f"Full Matrix Shape:{len(self._knowledge_items), self._embedding_matrix.shape[1]}")
 
-
- 
-
-
-
-
-        
-
-
-            
-
-
-
-
-
-                
-                
-
-            
-
-
-
-    
-            
-
-
-
-    #TODO: def search():
     #TODO: def count():
+    """
+    def count(): returns number of stored KnowledgeItem object
+    """
+    #VALIDATION PASSED
+    def count(self):
+        return len(self._knowledge_items)
+
     #TODO: def clear(): 
+    """
+    def clear_db(): reset the vector database into its original and clean state
+    """
+    def clear_db(self):
+        self._knowledge_items.clear() #removes all items
+        self._embedding_matrix = np.array([]) #reassign to an empty array
+        
 
