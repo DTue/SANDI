@@ -11,9 +11,8 @@ Goals:
 Architecture Decision:
 - VectorStore object to store knowledge object and embedding matrix of document vectors instead of VECTOR_DB[] that stores raw chunks
 """
-
 from system.models.knowledge_items import KnowledgeItem
-#from models.retrieved_results import RetrievedResults
+from system.models.retrieved_results import RetrievedResults
 import numpy as np
 
 
@@ -25,22 +24,6 @@ class VectorDatabase:
 
     """
     def add():takes knowledge objects and corresponding vectors to verify match and store together
-
-    add() behaviors:
-    - initialize storage if empty
-    - append if data already exists
-    - numbers of knowledge info must match number of vector rows
-
-    add() Error and Risk Validation
-    - Empty list
-    - Missing list
-    - Invalid list
-    - Unequal vectors
-    - Vectors might not be 2D
-    - New vectors might need different embedding dimentsion
-
-    add() note:     
-    - cannot combine vectors from different embedding spaces
     """
     def add(self, knowledge_items: list[KnowledgeItem], embedding_matrix: np.ndarray) -> None:
 
@@ -99,7 +82,6 @@ class VectorDatabase:
         print(f"Embedding Dimension: {self._embedding_matrix.shape[1]}")
         print(f"Full Matrix Shape:{len(self._knowledge_items), self._embedding_matrix.shape[1]}")
 
-    #TODO: def count():
     """
     def count(): returns number of stored KnowledgeItem object
     """
@@ -107,12 +89,67 @@ class VectorDatabase:
     def count(self):
         return len(self._knowledge_items)
 
-    #TODO: def clear(): 
     """
     def clear_db(): reset the vector database into its original and clean state
     """
     def clear_db(self):
         self._knowledge_items.clear() #removes all items
         self._embedding_matrix = np.array([]) #reassign to an empty array
+
+    """
+    def search(): Accept one query vector and return the top-k most similar KnowledgeItems as RetrievalResults.
+    """
+    def search(self, query_vector: np.ndarray, top_k: int) -> list[RetrievedResults]: 
+        if query_vector is None:
+            raise ValueError("VALUE ERROR: query vector is invalid")
+        if np.ndim(query_vector) != 1: 
+            raise ValueError("VALUE ERROR: query vector must be 1D")
+        if self._embedding_matrix is None: 
+            raise ValueError("VALUE ERROR: embedding matrix is empty")
+        if top_k <= 0:
+            raise ValueError("VALUE ERROR: top_k value must be greater than 0")
+        if query_vector.shape[0] != self._embedding_matrix.shape[1]:
+            raise ValueError("VALUE ERROR: query and embedding matrix shape does not match")
+
+        #similarity scores matrix - one score per knowledge
+        similarity_scores = np.matmul(self._embedding_matrix, query_vector)
+        print(f"Similarity Score: {similarity_scores.shape} ")
+        #ranked indices to preserve knowledge item structure/order
+        sorted_indices = np.argsort(similarity_scores, descending=True) #Order - descending: highest to lowest
+        top_indices = sorted_indices[:top_k]
+        retrieved_results: list[RetrievedResults] = [ ]
+        for rank, index in enumerate( top_indices, start=1): #returns positions, values
+            retrieved_object = RetrievedResults(
+                items=self._knowledge_items[index],
+                similarity_score=similarity_scores[index], 
+                rank=rank
+            )
+            retrieved_results.append(retrieved_object)
+            print(retrieved_results)
+
+        return retrieved_results
+        
+        
+
+
+
+        
+
+       
+
+        
+
+
+   
+
+        
+        
+        
+        
+
+
+
+
+
         
 
