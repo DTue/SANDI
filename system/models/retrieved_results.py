@@ -9,7 +9,7 @@ Architecture Decision:
 from dataclasses import dataclass
 from system.models.knowledge_items import KnowledgeItem
 
-@dataclass(fron=True)
+@dataclass(frozen=True)
 class RetrievedResults:
     items: KnowledgeItem
     similarity_score: float
