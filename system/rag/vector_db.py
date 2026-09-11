@@ -60,6 +60,7 @@ class VectorDatabase:
         print("CHECK POINT: All incoming knowledge item ids should be valid.")
 
         if not self._knowledge_items: # if knowledge items list is empty
+                print(f"Knowledge items list is empty. Initializing Now.")
                 self._knowledge_items = knowledge_items  
                 self._embedding_matrix = embedding_matrix
                 return
@@ -125,7 +126,7 @@ class VectorDatabase:
                 rank=rank
             )
             retrieved_results.append(retrieved_object)
-            print(retrieved_results)
+            print(f"{retrieved_results} ")
 
         return retrieved_results
         

@@ -1,20 +1,35 @@
-import ollama
+"""
+File Name: retrieval.py
+Purpose: Retreive top results that matches with user query
+Goals: 
+- Embed query for semantic values
+- Call search for vector database to look for top results
+- Return ranked results
+Architecture Decision:
+- Acts between Embedding Service and Vector Database
+"""
+import numpy as np
 from system.config import settings
-from vector_db import VECTOR_DB
+from system.rag.embeddings import EmbeddingService
+from system.rag.vector_db import VectorDatabase
 
-embedding_model = settings.EMBEDDING_MODEL
 
-def cosine_similarity(a, b):
-  dot_product = sum([x * y for x, y in zip(a, b)])
-  norm_a = sum([x ** 2 for x in a]) ** 0.5
-  norm_b = sum([x ** 2 for x in b]) ** 0.5
-  return dot_product / (norm_a * norm_b)
 
-def retrieve(query, top_n=3):
-  query_embedding = ollama.embed(model=embedding_model, input=query)['embeddings'][0]
-  similarities = []
-  for chunk, embedding in VECTOR_DB:
-    similarity = cosine_similarity(query_embedding, embedding)
-    similarities.append((chunk, similarity))
-    similarities.sort(key=lambda x: x[1], reverse=True)
-  return similarities[:top_n]
+class Retrieval: 
+  #Dependency Injection
+  def __init__(self, embedding_service: EmbeddingService, vector_db: VectorDatabase):
+    self.embedding_service = embedding_service
+    self.vector_db = vector_db
+
+  def embed_query(self, user_input: str):
+      
+      if user_input is None:
+          raise ValueError("VALIDATION: User query is empty/invalid")
+      
+      embeded_query = self.embedding_service.embed_query(user_input)
+      print(f"Embedded query value: {embeded_query}")
+      return embeded_query
+
+  def retrieve(self, embeded_query: np.ndarray):
+    return self.vector_db.search(query_vector=embeded_query,top_k=settings.TOP_K)
+      
